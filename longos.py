@@ -1,13 +1,18 @@
 import numpy as np
 import operator
+import piecesinfo
+import view
 
-def fun_1(state,i,j,k,blocks,direc):
-	if blocks == 0:
-		if direc == 0:
-			state.a[i,j,k] = blocks
-	return a
 
-class state:
+
+def UpdateState(state, num, position):
+#	for i in lonpospiece.possible_position:
+	for point in position:
+		state.a[point[0],point[1],point[2]] = num
+	state.block[num] = True
+	return state
+
+class State:
 	"""金字塔的状态"""
 	def __init__(self):
 		self.a = np.zeros([5,5,5], dtype = int)
@@ -16,11 +21,11 @@ class state:
 		#是否使用积木
 		self.block = np.zeros(12, dtype = bool)
 		
-state = state()
+state = State()
 
-white = [[0,0,0], [0,0,1], [0,1,1]]
 
-def rotate(subject):
+
+def Rotate(subject):
 	rot = [
 	[1,0,0],
 	[0,0,1],
@@ -31,32 +36,20 @@ def rotate(subject):
 		temp.append(np.dot(rot,i).tolist())
 	return temp
 
-class Lonpospiece(object):
-	"""docstring for Lonpospiece"""
-	def __init__(self, name, poss):
-		super(Lonpospiece, self).__init__()
-		name = name
-		possiable_position = poss
+class lonpospiece(object):
+	"""docstring for lonpospiece"""
+	def __init__(self, num, poss):
+		super(lonpospiece, self).__init__()
+		num = num
+		name = piecesinfo.allpieces[num]["name"]
+		possible_position = poss
 		
 
 
-WHITE3  = [ [0,1,0], [0,0,0], [0,0,1] ]
-GREEN4  = [ [0,0,0], [0,1,0], [0,1,1], [0,0,1] ]
-ORANGE4 = [ [0,1,0], [0,0,0], [0,0,1], [0,0,2] ]
-PURPLE4 = [ [0,0,0], [0,0,1], [0,0,2], [0,0,3] ]
-BLUE5   = [ [0,1,0], [0,0,0], [0,0,1], [0,0,2], [0,0,3] ]
-CYAN5   = [ [0,2,0], [0,1,0], [0,0,0], [0,0,1], [0,0,2] ]
-GREEN5  = [ [0,0,0], [0,0,1], [0,0,2], [0,1,2], [0,1,3] ]
-RED5    = [ [0,0,0], [0,0,1], [0,0,2], [0,1,1], [0,1,2] ]
-PURPLE5 = [ [0,0,0], [0,0,1], [0,1,1], [0,1,2], [0,2,2] ]
-YELLOW5 = [ [0,0,0], [0,0,1], [0,1,1], [0,2,1], [0,2,0] ]
-GRAY5   = [ [0,0,1], [0,1,1], [0,1,0], [0,1,2], [0,2,1] ]
-PINK5   = [ [0,0,0], [0,0,1], [0,1,1], [0,0,2], [0,0,3] ]
-
-def possiable(piece):
+def Possible(piece):
 	piecepossible = []
 	for m in range(4):
-		piece = rotate(piece)
+		piece = Rotate(piece)
 		for i in range(5):
 			for j in range(5-i):
 				for k in range(5-i):
@@ -87,12 +80,12 @@ def possiable(piece):
 
 
 
-for i in possiable(GREEN4):
-	print(i)
-print(len(possiable(GREEN4)))
+#for i in Possiable(GREEN4):
+#	print(i)
+#print(len(Possiable(GREEN4)))
 
 
-#print(rotate(whitepossible))
+#print(Rotate(whitepossible))
 
 #层数
 for i in range(5):
@@ -105,6 +98,19 @@ for i in range(5):
 				for blocks in range(12):
 					for direc in range(20):
 						k = 10
+
+state = UpdateState(state, 1, piecesinfo.WHITE3)
+
+view.View(state)
+
+lonpos_possible = []
+for i in range(12):
+	lonpos_possible.append(lonpospiece(i, Possible(piecesinfo.allpieces[i]["coords"])))
+	print(piecesinfo.allpieces[i]["name"])
+	print(len(Possible(piecesinfo.allpieces[i]["coords"])))
+	for j in Possible(piecesinfo.allpieces[i]["coords"]):
+		print(j)
+
 
 
 
