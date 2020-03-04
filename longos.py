@@ -131,8 +131,6 @@ for i in Possible(piecesinfo.YELLOW5):
 print(len(Possible(piecesinfo.YELLOW5)))
 '''
 
-
-
 def UpdatePossible(lonpos_possible, position, num):
 	new = []
 	for lonpospiece in lonpos_possible:
@@ -152,17 +150,36 @@ def UpdatePossible(lonpos_possible, position, num):
 		new.append(newpiece)
 	return new
 
+def CanSolve(state, lonpos_possible):
+	flag = 1
+	for i in range(5):
+		for j in range(5-i):
+			for k in range(5-i):
+				if state.point[i,j,k] == -1:
+					flag1 = 0
+					for lonpospiece in lonpos_possible:
+						for position in lonpospiece.possible_position:
+							if [i,j,k] in position:
+								flag1 = 1
+					if flag1 == 0:
+						flag = 0
+	return flag
+
+
 def Solve(state, lonpos_possible, left):
 	"""求解"""
 	if left == 0:
 		view.View(state)
 		os._exit(0)
+	if not CanSolve(state, lonpos_possible):
+		# view.View(state)
+		return
 	for lonpospiece in lonpos_possible:	
 		num = lonpospiece.num
 		for position in lonpospiece.possible_position:
 			statenew = UpdateState(state, num, position)
 			possiblenew = UpdatePossible(lonpos_possible, position, num)
-			view.View(statenew)
+			# view.View(statenew)
 			Solve(statenew, possiblenew, left-1)
 
 '''
