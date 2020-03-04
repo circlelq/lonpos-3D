@@ -4,7 +4,7 @@ import piecesinfo
 import view
 from math import *
 import copy
-
+import os
 
 def UpdateState(state, num, position):
 #	for i in lonpospiece.possible_position:
@@ -131,42 +131,39 @@ for i in Possible(piecesinfo.YELLOW5):
 print(len(Possible(piecesinfo.YELLOW5)))
 '''
 
-def CanPutIn(state, position, num):
-	flag = 1
-	for point in position:
-		if state.point[point[0],point[1],point[2]] > -1:
-			flag = 0
-	return flag
 
-def IsFinished(state):
-	flag = 1
-	for block in state.block:
-		if block == False:
-			flag = 0
-	return flag
 
-def UpdagePossible(lonpos_possible, position):
-	for point in position:
-		for i in range(12):
-			for p in lonpos_possible[i].possible_position:
-				if point in p:
-					del lonpos_possible[i].possible_position[p]
-	return lonpos_possible
-
-def Solve(state,lonpos_possible):
-	"""求解"""
+def UpdatePossible(lonpos_possible, position, num):
+	new = []
 	for lonpospiece in lonpos_possible:
-		num = lonpospiece.num
-		if state.block[num]:
+		if num == lonpospiece.num:
 			continue
+		newpiece = copy.deepcopy(lonpospiece)
+		temp = []
+		#判断是否有重合
+		for p in newpiece.possible_position:
+			flag = 1
+			for q in position:
+				if q in p:
+					flag = 0
+			if flag:
+				temp.append(p)
+		newpiece.possible_position = temp
+		new.append(newpiece)
+	return new
+
+def Solve(state, lonpos_possible, left):
+	"""求解"""
+	if left == 0:
+		view.View(state)
+		os._exit(0)
+	for lonpospiece in lonpos_possible:	
+		num = lonpospiece.num
 		for position in lonpospiece.possible_position:
-			if CanPutIn(state, position, num):
-				statenew = UpdateState(state, num, position)
-				if IsFinished(statenew):
-					view.View(statenew)
-					os._exit()
-				# UpdagePossible(lonpos_possible,position)
-				Solve(statenew, lonpos_possible)
+			statenew = UpdateState(state, num, position)
+			possiblenew = UpdatePossible(lonpos_possible, position, num)
+			view.View(statenew)
+			Solve(statenew, possiblenew, left-1)
 
 '''
 
@@ -192,4 +189,4 @@ state = State()
 
 # view.View(state)
 
-Solve(state, lonpos_possible)
+Solve(state, lonpos_possible, 12)
