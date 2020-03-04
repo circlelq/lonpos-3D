@@ -2,66 +2,39 @@ import numpy as np
 import operator
 import piecesinfo
 import view
-from math import *
 import copy
 import os
+from functions import *
 
 def UpdateState(state, num, position):
 #	for i in lonpospiece.possible_position:
 	statenew =  copy.deepcopy(state)
 	for point in position:
-		statenew.point[point[0],point[1],point[2]] = num
-	statenew.block[num] = True
+		statenew[point[0],point[1],point[2]] = num
 	return statenew
 
-class State:
-	"""金字塔的状态"""
-	def __init__(self):
-		self.point = np.zeros([5,5,5], dtype = int)
-		self.point[:] = -1
-		self.point.astype(int)
-		#是否使用积木
-		self.block = np.zeros(12, dtype = bool)
-		
+def GetState():
+	"""金字塔的状态初始化"""
+	state = np.zeros([5,5,5], dtype = int)
+	state[:] = -1
+	state.astype(int)
+	return state
 
-#绕(0,sqrt(2)/2,sqrt(2)/2)选择90度
-def Rotate1(subject):
-	rot = [
-	[0,-sqrt(2)/2,sqrt(2)/2],
-	[sqrt(2)/2,1/2,1/2],
-	[-sqrt(2)/2,1/2,1/2]
-	]
-	temp =[]
-	for i in subject:
-		temp.append(np.dot(rot,i).tolist())
-	return temp
+def GetPossible():
+	lonpos_possible = []
+	for i in range(12):
+		poss = Possible(piecesinfo.allpieces[i]["coords"], piecesinfo.allpieces[i]["num"])
+		lonpos_possible.append(lonpospiece(piecesinfo.allpieces[i]["num"], poss))
+		# print(piecesinfo.allpieces[i]["name"])
+		# print(len(poss))
+		# for j in poss:
+		# 	print(j)
+	return lonpos_possible
 
-#绕(1,0,0)旋转90度
-def Rotate2(subject):
-	rot = [
-	[1,0,0],
-	[0,0,1],
-	[0,-1,0]
-	]
-	temp =[]
-	for i in subject:
-		temp.append(np.dot(rot,i).tolist())
-	return temp
 
-#绕(0,0,1)旋转180度
-def Rotate3(subject):
-	rot = [
-	[-1,0,0],
-	[0,-1,0],
-	[0,0,1]
-	]
-	temp =[]
-	for i in subject:
-		temp.append(np.dot(rot,i).tolist())
-	return temp
 
 class lonpospiece(object):
-	"""docstring for lonpospiece"""
+	"""lonpos积木类"""
 	def __init__(self, number, poss):
 		self.num = number
 		self.name = piecesinfo.allpieces[number]["name"]
@@ -88,25 +61,50 @@ def IsFit(piece):
 	return flag
 
 
-def Possible(piece):
+def Possible(piece, num):
 	piecepossible = []
-	piece = Rotate1(piece)
-	for rot1 in range(4):
+	if num == 2:
+		for i in range(5):
+			for j in range(5-i):
+				for k in range(5-i):
+					temppiece = []
+					for p in piece:
+						temppiece.append((np.array(p) + np.array([i*sqrt(2)/2,j+i*0.5,k+i*0.5])).tolist())
+			
+					temppiece = ChangeToInt(temppiece)
+					if IsFit(temppiece):
+						piecepossible.append(temppiece)
 		piece = Rotate1(piece)
 		for rot2 in range(4):
-			piece = Rotate2(piece)		
-			for rot3 in range(4):
-				piece = Rotate3(piece)		
-				for i in range(5):
-					for j in range(5-i):
-						for k in range(5-i):
-							temppiece = []
-							for p in piece:
-								temppiece.append((np.array(p) + np.array([i*sqrt(2)/2,j+i*0.5,k+i*0.5])).tolist())
-					
-							temppiece = ChangeToInt(temppiece)
-							if IsFit(temppiece):
-								piecepossible.append(temppiece)
+			piece = Rotate3(piece)
+			for i in range(5):
+				for j in range(5-i):
+					for k in range(5-i):
+						temppiece = []
+						for p in piece:
+							temppiece.append((np.array(p) + np.array([i*sqrt(2)/2,j+i*0.5,k+i*0.5])).tolist())
+				
+						temppiece = ChangeToInt(temppiece)
+						if IsFit(temppiece):
+							piecepossible.append(temppiece)			
+	else:
+		piece = Rotate1(piece)
+		for rot1 in range(4):
+			piece = Rotate1(piece)
+			for rot2 in range(4):
+				piece = Rotate2(piece)		
+				for rot3 in range(4):
+					piece = Rotate3(piece)
+					for i in range(5):
+						for j in range(5-i):
+							for k in range(5-i):
+								temppiece = []
+								for p in piece:
+									temppiece.append((np.array(p) + np.array([i*sqrt(2)/2,j+i*0.5,k+i*0.5])).tolist())
+						
+								temppiece = ChangeToInt(temppiece)
+								if IsFit(temppiece):
+									piecepossible.append(temppiece)
 	#去除重复项
 	flag = 0
 	temp = []
@@ -155,7 +153,7 @@ def CanSolve(state, lonpos_possible):
 	for i in range(5):
 		for j in range(5-i):
 			for k in range(5-i):
-				if state.point[i,j,k] == -1:
+				if state[i,j,k] == -1:
 					flag1 = 0
 					for lonpospiece in lonpos_possible:
 						for position in lonpospiece.possible_position:
@@ -169,18 +167,17 @@ def CanSolve(state, lonpos_possible):
 def Solve(state, lonpos_possible, left):
 	"""求解"""
 	if left == 0:
-		view.View(state)
-		os._exit(0)
+		WriteResult(state)
+		return
 	if not CanSolve(state, lonpos_possible):
 		# view.View(state)
 		return
-	for lonpospiece in lonpos_possible:	
-		num = lonpospiece.num
-		for position in lonpospiece.possible_position:
-			statenew = UpdateState(state, num, position)
-			possiblenew = UpdatePossible(lonpos_possible, position, num)
-			# view.View(statenew)
-			Solve(statenew, possiblenew, left-1)
+	num = lonpos_possible[0].num
+	for position in lonpos_possible[0].possible_position:
+		statenew = UpdateState(state, num, position)
+		possiblenew = UpdatePossible(lonpos_possible, position, num)
+		# view.View(statenew)
+		Solve(statenew, possiblenew, left-1)
 
 '''
 
@@ -193,17 +190,14 @@ for i in Possible(piecesinfo.YELLOW5):
 
 '''
 
-lonpos_possible = []
-for i in range(12):
-	lonpos_possible.append(lonpospiece(i, Possible(piecesinfo.allpieces[i]["coords"])))
-	# print(piecesinfo.allpieces[i]["name"])
-	# print(len(Possible(piecesinfo.allpieces[i]["coords"])))
-	# for j in Possible(piecesinfo.allpieces[i]["coords"]):
-	# 	print(j)
 
-
-state = State()
+lonpos_possible = GetPossible()
+state = GetState()
 
 # view.View(state)
 
+fileObject = open('result.txt', 'w')  
+
 Solve(state, lonpos_possible, 12)
+
+fileObject.close() 

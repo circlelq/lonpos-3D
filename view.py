@@ -6,6 +6,6 @@ def View(state):
 			for m in range(i):
 				print(end=" ")
 			for k in range(5-i):
-				print(state.point[i,j,k],end=" ")
+				print(state[i,j,k],end=" ")
 			print()
 	print()

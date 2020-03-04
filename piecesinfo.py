@@ -1,40 +1,52 @@
 allpieces = []
 
-allpieces.append({"name": "ORANGE4",
-	"coords": [ [0,1,0], [0,0,0], [0,0,1], [0,0,2] ]})
-
-allpieces.append({"name": "RED5",
-	"coords": [ [0,0,0], [0,0,1], [0,0,2], [0,1,1], [0,1,2] ]})
-
 allpieces.append({"name": "BLUE5",
-	"coords": [ [0,1,0], [0,0,0], [0,0,1], [0,0,2], [0,0,3] ]})
-
-allpieces.append({"name": "PINK5",
-	"coords": [ [0,0,0], [0,0,1], [0,1,1], [0,0,2], [0,0,3] ]})
-
-allpieces.append({"name": "GREEN5",
-	"coords": [ [0,0,0], [0,0,1], [0,0,2], [0,1,2], [0,1,3] ]})
-
-allpieces.append({"name": "WHITE3",
-	"coords": [ [0,1,0], [0,0,0], [0,0,1] ]})
-
-allpieces.append({"name": "CYAN5",
-	"coords": [ [0,2,0], [0,1,0], [0,0,0], [0,0,1], [0,0,2] ]})
-
-allpieces.append({"name": "PURPLE5",
-	"coords": [ [0,0,0], [0,0,1], [0,1,1], [0,1,2], [0,2,2] ]})
-
-allpieces.append({"name": "YELLOW5",
-	"coords": [ [0,0,0], [0,0,1], [0,1,1], [0,2,1], [0,2,0] ]})
-
-allpieces.append({"name": "PURPLE4",
-	"coords": [ [0,0,0], [0,0,1], [0,0,2], [0,0,3] ]})
-
-allpieces.append({"name": "GREEN4",
-	"coords": [ [0,0,0], [0,1,0], [0,1,1], [0,0,1] ]})
+	"coords": [ [0,1,0], [0,0,0], [0,0,1], [0,0,2], [0,0,3] ],
+	"num": 2})
 
 allpieces.append({"name": "GRAY5",
-	"coords": [ [0,0,0], [0,1,0], [0,1,-1], [0,1,1], [0,2,0] ]})
+	"coords": [ [0,0,0], [0,1,0], [0,1,-1], [0,1,1], [0,2,0] ],
+	"num": 11})
+
+allpieces.append({"name": "CYAN5",
+	"coords": [ [0,2,0], [0,1,0], [0,0,0], [0,0,1], [0,0,2] ],
+	"num": 6})
+
+allpieces.append({"name": "PURPLE5",
+	"coords": [ [0,0,0], [0,0,1], [0,1,1], [0,1,2], [0,2,2] ],
+	"num": 7})
+
+allpieces.append({"name": "PINK5",
+	"coords": [ [0,0,0], [0,0,1], [0,1,1], [0,0,2], [0,0,3] ],
+	"num": 3})
+
+allpieces.append({"name": "YELLOW5",
+	"coords": [ [0,0,0], [0,0,1], [0,1,1], [0,2,1], [0,2,0] ],
+	"num": 8})
+
+allpieces.append({"name": "GREEN5",
+	"coords": [ [0,0,0], [0,0,1], [0,0,2], [0,1,2], [0,1,3] ],
+	"num": 4})
+
+allpieces.append({"name": "PURPLE4",
+	"coords": [ [0,0,0], [0,0,1], [0,0,2], [0,0,3] ],
+	"num": 9})
+
+allpieces.append({"name": "GREEN4",
+	"coords": [ [0,0,0], [0,1,0], [0,1,1], [0,0,1] ],
+	"num": 10})
+
+allpieces.append({"name": "RED5",
+	"coords": [ [0,0,0], [0,0,1], [0,0,2], [0,1,1], [0,1,2] ],
+	"num": 1})
+
+allpieces.append({"name": "ORANGE4",
+	"coords": [ [0,1,0], [0,0,0], [0,0,1], [0,0,2] ],
+	"num": 0})
+
+allpieces.append({"name": "WHITE3",
+	"coords": [ [0,1,0], [0,0,0], [0,0,1] ],
+	"num": 5})
 
 
 
