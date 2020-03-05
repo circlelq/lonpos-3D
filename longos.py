@@ -6,6 +6,8 @@ import copy
 import os
 from functions import *
 
+result = 1
+
 def UpdateState(state, num, position):
 #	for i in lonpospiece.possible_position:
 	statenew =  copy.deepcopy(state)
@@ -24,7 +26,7 @@ def GetPossible():
 	lonpos_possible = []
 	for i in range(12):
 		poss = Possible(piecesinfo.allpieces[i]["coords"], piecesinfo.allpieces[i]["num"])
-		lonpos_possible.append(lonpospiece(piecesinfo.allpieces[i]["num"], poss))
+		lonpos_possible.append(lonpospiece(i, poss))
 		# print(piecesinfo.allpieces[i]["name"])
 		# print(len(poss))
 		# for j in poss:
@@ -36,7 +38,7 @@ def GetPossible():
 class lonpospiece(object):
 	"""lonpos积木类"""
 	def __init__(self, number, poss):
-		self.num = number
+		self.num = piecesinfo.allpieces[number]["num"]
 		self.name = piecesinfo.allpieces[number]["name"]
 		self.possible_position = poss
 
@@ -167,7 +169,9 @@ def CanSolve(state, lonpos_possible):
 def Solve(state, lonpos_possible, left):
 	"""求解"""
 	if left == 0:
-		WriteResult(state)
+		global result
+		WriteResult(state, result)
+		result = result +1
 		return
 	if not CanSolve(state, lonpos_possible):
 		# view.View(state)
@@ -196,8 +200,5 @@ state = GetState()
 
 # view.View(state)
 
-fileObject = open('result.txt', 'w')  
-
 Solve(state, lonpos_possible, 12)
 
-fileObject.close() 

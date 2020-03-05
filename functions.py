@@ -1,6 +1,5 @@
 from math import *
 import numpy as np
-fileObject = open('result.txt', 'w')
 
 #绕(0,sqrt(2)/2,sqrt(2)/2)选择90度
 def Rotate1(subject):
@@ -38,11 +37,15 @@ def Rotate3(subject):
 		temp.append(np.dot(rot,i).tolist())
 	return temp
 
-def WriteResult(state):
-	for i in state:
-		for j in i:
-			for k in j:
-			    fileObject.write(str(k)+" ")
+def WriteResult(state, num):
+	fileObject = open('results/result%04d.txt'%num, 'w')
+	for i in range(5,-1,-1):
+		for j in range(5-i):
+			for m in range(i):
+				fileObject.write(" ")
+			for k in range(5-i):
+				fileObject.write(str(state[i,j,k])+" ")
 			fileObject.write('\n')
 		fileObject.write('\n')
 	fileObject.write('\n')
+	fileObject.close() 
