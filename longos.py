@@ -6,9 +6,11 @@ import copy
 import os
 from functions import *
 
+# 记录第n个结果
 result = 1
 
 def UpdateState(state, num, position):
+	"""每放入一个积木，更新摆放的状态"""
 #	for i in lonpospiece.possible_position:
 	statenew =  copy.deepcopy(state)
 	for point in position:
@@ -56,6 +58,7 @@ def ChangeToInt(piece):
 	return temp
 
 def IsFit(piece):
+	"""是否能放进去"""
 	flag = 1
 	for p in piece:
 		if p[0]<0 or p[0]>4 or p[1]<0 or p[1]>4-p[0] or p[2]<0 or p[2]>4-p[0]:
@@ -64,8 +67,9 @@ def IsFit(piece):
 
 
 def Possible(piece, num):
+	"""计算所有积木所有可能放的位置"""
 	piecepossible = []
-	if num == 2:
+	if num == 2: # 第一个积木不考虑旋转、镜像对称的情况
 		for i in range(5):
 			for j in range(5-i):
 				for k in range(5-i):
@@ -81,7 +85,7 @@ def Possible(piece, num):
 			piece = Rotate3(piece)
 			for i in range(5):
 				for j in range(5-i):
-					for k in range(5-i):
+					for k in range(j, 5-i):
 						temppiece = []
 						for p in piece:
 							temppiece.append((np.array(p) + np.array([i*sqrt(2)/2,j+i*0.5,k+i*0.5])).tolist())
@@ -132,6 +136,7 @@ print(len(Possible(piecesinfo.YELLOW5)))
 '''
 
 def UpdatePossible(lonpos_possible, position, num):
+	"""更新每个积木可能放的位置"""
 	new = []
 	for lonpospiece in lonpos_possible:
 		if num == lonpospiece.num:
@@ -151,6 +156,7 @@ def UpdatePossible(lonpos_possible, position, num):
 	return new
 
 def CanSolve(state, lonpos_possible):
+	"""判断此状态是否无解"""
 	flag = 1
 	for i in range(5):
 		for j in range(5-i):
@@ -174,13 +180,13 @@ def Solve(state, lonpos_possible, left):
 		result = result +1
 		return
 	if not CanSolve(state, lonpos_possible):
-		# view.View(state)
+		# View(state)
 		return
 	num = lonpos_possible[0].num
 	for position in lonpos_possible[0].possible_position:
 		statenew = UpdateState(state, num, position)
 		possiblenew = UpdatePossible(lonpos_possible, position, num)
-		# view.View(statenew)
+		# View(statenew)
 		Solve(statenew, possiblenew, left-1)
 
 '''
@@ -190,7 +196,7 @@ Possible(piecesinfo.YELLOW5)
 for i in Possible(piecesinfo.YELLOW5):
 	state = State()
 	state = UpdateState(state, 0, i)
-	view.View(state)
+	View(state)
 
 '''
 
@@ -198,7 +204,7 @@ for i in Possible(piecesinfo.YELLOW5):
 lonpos_possible = GetPossible()
 state = GetState()
 
-# view.View(state)
+# View(state)
 
 Solve(state, lonpos_possible, 12)
 
